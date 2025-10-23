@@ -4,8 +4,6 @@
 **Nama:** Arya Andhika Trisnawan  
 **NIM:** 11221054  
 **Mata Kuliah:** Sistem Terdistribusi  
-**Dosen Pengampu:** [Isi Nama Dosen Anda]  
-**Tahun Akademik:** 2025  
 
 ---
 

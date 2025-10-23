@@ -68,32 +68,25 @@ async def global_exception_handler(request: Request, exc: Exception):
 # ======================
 # Routes
 # ======================
-
 @app.get("/")
 async def root():
-    """Root endpoint"""
     return {"status": "ok", "message": "🚀 Event Aggregator API is running"}
 
 @app.post("/publish")
 async def publish_events(events: EventBatch):
-    """Publish single or batch events"""
-    try:
-        if not events.events:
-            raise HTTPException(status_code=400, detail="No events provided")
+    if not events.events:
+        raise HTTPException(status_code=400, detail="No events provided")
 
-        await event_service.process_events(events.events)
-        return {
-            "status": "success",
-            "processed_count": len(events.events),
-            "message": f"Processed {len(events.events)} events successfully"
-        }
-    except Exception as e:
-        logger.error(f"Error in /publish: {e}")
-        raise HTTPException(status_code=400, detail=str(e))
+    result = await event_service.process_events(events.events)
+    return {
+        "status": "success",
+        "processed_count": result["processed"],
+        "duplicate_dropped": result["duplicates"],
+        "message": f"Processed {result['processed']} events, dropped {result['duplicates']} duplicates"
+    }
 
 @app.get("/events")
 async def get_events(topic: str | None = None):
-    """Get processed events, optionally filtered by topic"""
     events = await event_service.get_events(topic)
     if topic and not events:
         raise HTTPException(status_code=404, detail=f"No events found for topic '{topic}'")
@@ -101,7 +94,6 @@ async def get_events(topic: str | None = None):
 
 @app.get("/stats")
 async def get_stats():
-    """Get aggregator statistics"""
     stats = await event_service.get_stats()
     uptime = (datetime.now(timezone.utc) - start_time).total_seconds()
     stats["uptime"] = round(uptime, 2)
