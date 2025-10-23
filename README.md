@@ -12,9 +12,6 @@ Sistem menerapkan **idempotency dan deduplication** agar event duplikat tidak di
 |:--------|:----------|:------------|
 | 1 | `docker build -t uts-aggregator .` | Membangun image dari Dockerfile |
 | 2 | `docker run -p 8080:8080 uts-aggregator` | Menjalankan container |
-| 3 | (Opsional) `pytest -v` | Menjalankan unit test di dalam container |
-| 4 | (Opsional) `docker-compose up --build` | Menjalankan sistem menggunakan docker-compose |
-
 Aplikasi dapat diakses melalui:  
 🌐 **http://localhost:8080**
 
@@ -27,7 +24,6 @@ Aplikasi dapat diakses melalui:
 | `POST` | `/publish` | Menerima batch event untuk diproses dan disimpan | `{ "status": "ok" }` |
 | `GET` | `/events` | Mengambil semua event yang tersimpan (dapat difilter per topic) | `[ { "topic": "...", "payload": {...} } ]` |
 | `GET` | `/stats` | Menampilkan statistik jumlah event, duplikat, dan topik aktif | `{ "received": 100, "duplicate_dropped": 10 }` |
-| `GET` | `/health` | Mengecek status service | `{ "status": "healthy" }` |
 
 ---
 
@@ -53,7 +49,3 @@ Unit test dilakukan menggunakan **pytest** dan mencakup:
 | `test_dedup.py` | Pengujian SQLiteEventStore dan deteksi duplikat | Memastikan idempotency berjalan |
 | Batch Test (1000 events) | Uji performa | Memastikan waktu proses < 5 detik |
 | Persistence Test | Restart container | Verifikasi store tetap mengenali duplikat lama |
-
-Perintah:
-```bash
-pytest -v
