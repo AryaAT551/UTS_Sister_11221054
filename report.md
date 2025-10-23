@@ -1,4 +1,4 @@
-# 📖 Laporan UTS Sistem Terdistribusi  
+# Laporan UTS Sistem Terdistribusi  
 ## Event Aggregator — FastAPI + SQLite + Docker  
 
 **Nama:** Arya Andhika Trisnawan  
